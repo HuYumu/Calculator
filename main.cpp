@@ -8,4 +8,5 @@ int main(int argc, char *argv[])
     Calculator w;
     w.show();
     return a.exec();
+
 }
