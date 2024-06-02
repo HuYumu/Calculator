@@ -60,6 +60,7 @@ private slots:
 
     void on_op10_clicked();
 
+
 private:
     QString in;
     QString ret;

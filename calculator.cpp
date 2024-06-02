@@ -1,6 +1,10 @@
 #include "calculator.h"
 #include "ui_calculator.h"
 #include "stack.cpp"
+
+#include <QMessageBox>
+
+
 Calculator::Calculator(QWidget *parent): QWidget(parent), ui(new Ui::Calculator)
 {
     in = "";
@@ -8,10 +12,12 @@ Calculator::Calculator(QWidget *parent): QWidget(parent), ui(new Ui::Calculator)
     ui->setupUi(this);
 }
 
+
 Calculator::~Calculator()
 {
     delete ui;
 }
+
 
 int Calculator::priority(char op){
     switch(op){
@@ -82,8 +88,8 @@ void Calculator::startCount(Stack<int>& ops,Stack<int>& nums){
 bool Calculator::calculate(std::string s,int &ret){
     Stack<int> ops(20);
     Stack<int> nums(20);
-    int count=0,op=0,num=0;
-    int pos=0;
+    int count = 0, op = 0, num = 0;
+    int pos = 0;
     ops.push(-1);
     s += "#";
     try{
@@ -125,7 +131,8 @@ bool Calculator::calculate(std::string s,int &ret){
                 }//解决&&占两个字符的情况
 
                 if(s[pos+1]!='('&s[pos+1]<48||s[pos+1]>57){
-                    throw "+-*/&||(!不能还是+-*/&||)!";
+                    // throw "+-*/&||(!不能还是+-*/&||)!";
+                    throw "表达式错误";
                 }//排错3
                 int temp_op;
                 ops.top(temp_op);
@@ -148,7 +155,7 @@ bool Calculator::calculate(std::string s,int &ret){
         return true;
     }
     catch(const char* ero_msg){
-        eroMsg = QString::fromStdString(ero_msg);
+        QMessageBox::warning(this,"Error",ero_msg,QMessageBox::Yes);
         return false;
     }
 
@@ -166,7 +173,6 @@ void Calculator::on_num2_clicked()
     in+="2";
     ui->input->setText(in);
 }
-
 
 void Calculator::on_num3_clicked()
 {
@@ -216,6 +222,7 @@ void Calculator::on_num0_clicked()
     ui->input->setText(in);
 }
 
+
 void Calculator::on_clear_clicked()
 {
     in = "";
@@ -225,19 +232,20 @@ void Calculator::on_clear_clicked()
 }//清零
 
 
-
 void Calculator::on_op8_clicked()
 {
-    int ret = 0;
+    int ans = 0;
     std::string in_ = in.toStdString();
-    if(calculate(in_,ret)){
-        ui->output->setText(QString::number(ret));
+    if(calculate(in_,ans)){
+        ui->output->setText(QString::number(ans));
+    } else {
+        in = "";
+        ret = "";
+        ui->input->setText(in);
+        ui->output->setText(ret);
     }
-    else{
-        ui->errorMsg->setText(eroMsg);
-    }
-
 }//=
+
 
 void Calculator::on_op1_clicked()
 {
@@ -252,18 +260,19 @@ void Calculator::on_op2_clicked()
     ui->input->setText(in);
 }//-
 
+
 void Calculator::on_op3_clicked()
 {
     in += "*";
     ui->input->setText(in);
 }//*
 
+
 void Calculator::on_op4_clicked()
 {
     in += "/";
     ui->input->setText(in);
 }// /
-
 
 
 void Calculator::on_op5_clicked()
@@ -280,7 +289,6 @@ void Calculator::on_op6_clicked()
 }// ||
 
 
-
 void Calculator::on_op7_clicked()
 {
     in += "!";
@@ -294,8 +302,10 @@ void Calculator::on_op9_clicked()
     ui->input->setText(in);
 }
 
+
 void Calculator::on_op10_clicked()
 {
     in += ")";
     ui->input->setText(in);
 }
+
